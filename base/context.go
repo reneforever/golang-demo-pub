@@ -11,9 +11,23 @@ var wg sync.WaitGroup
 
 func f(ctx context.Context) {
 	defer wg.Done()
+	go f2(ctx)
 LOOP:
 	for {
-		fmt.Println("xxxxx")
+		fmt.Println("f1")
+		time.Sleep(time.Millisecond * 500)
+		select {
+		case <-ctx.Done():
+			break LOOP
+		default:
+		}
+	}
+}
+
+func f2(ctx context.Context) {
+LOOP:
+	for {
+		fmt.Println("f2")
 		time.Sleep(time.Millisecond * 500)
 		select {
 		case <-ctx.Done():
